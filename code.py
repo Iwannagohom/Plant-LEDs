@@ -7,6 +7,11 @@ from ledPixelsPico import *
 
 pix = ledPixels(64, board.GP0)
 print("running")
-pix.clear(5)
-#pix.brightness=0.5
-#pix.rainbowForever()
+#pix.clear(5)
+pix.brightness=0.1
+pix.rainbowForever()
+ 
+
+    
+
+
