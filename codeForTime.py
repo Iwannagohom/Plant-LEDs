@@ -5,17 +5,23 @@ import adafruit_requests
 import time
 import microcontroller
 import json
+from ledPixelsPico import *
+
+pix = ledPixels(64, board.GP0)
+pix1 = ledPixels(64, board.GP15)
+
 
 def timeToSeconds(t):               #(t= "12:59:18 AM")
-    print(t)
+    #print(t)
     h,m,s = t.split(":")
 
+    
     s,tt=s.split(" ")
 
     h=int(h)                       
     m=int(m)                        
     s=int(s)                        
-    print(h,m,s,tt)
+    #print(h,m,s,tt)
 
 
     if h == 12 and tt == "AM":
@@ -26,17 +32,19 @@ def timeToSeconds(t):               #(t= "12:59:18 AM")
     
     nM=m*60
     
-    print(h, "-->", nH)
-    print(m, "-->", nM)
+    #print(h, "-->", nH)
+    #print(m, "-->", nM)
     
-    print(nH,nM, s, tt)
+    #print(nH,nM, s, tt)
 
     total = nH + nM + s
-    print("Total =", total, tt)
+    #print("Total =", total, tt)
     
     if total < 18000:
-        sTotal = ((total + 86400)-18000)
-        print("sTotal = ", sTotal, tt)
+        total = ((total + 86400)-18000)
+        #print("Total = ", total, tt)
+    
+    return total
     
 
 
@@ -61,22 +69,15 @@ response.close()
 for key in t.keys():
     print(key, t[key])
     
-print(".....", t["tm_hour"], t["tm_min"], t["tm_sec"])
+#print(".....", t["tm_hour"], t["tm_min"], t["tm_sec"])
 
-ch = t["tm_hour"]				#curent (time) hours.
-cm = t["tm_min"]
-cs = t["tm_sec"]
 
-cH = ch*60*60					#curent (time) hours in Seconds.
-cM = cm*60
-
-cTotal=(cH+cM+t["tm_sec"])		#Curent time in seconds
-print(cTotal)
 
 
 
 
 urlS = "https://api.sunrise-sunset.org/json?lat=38.6631&lng=-90.5771"
+
 
 response = requests.get(urlS)
 print("!!!!!!!!!!",response.text)
@@ -85,13 +86,66 @@ response.close()
 
 rise = (t["results"]["sunrise"])
 setd = (t["results"]["sunset"])
-print("------------------", rise, setd)
+#print("------------------", rise, setd)
 
-while True:
-    response = requests.get(url)
-    print(response.text)
-    time.sleep(1)
 
 timeToSeconds(rise)
 print(" ")
 timeToSeconds(setd)
+
+
+
+def Curent(t):
+    ch = t["tm_hour"]				#curent (time) hours.
+    cm = t["tm_min"]
+    cs = t["tm_sec"]
+
+    cH = ch*60*60					#curent (time) hours in Seconds.
+    cM = cm*60
+
+    cTotal=(cH+cM+t["tm_sec"])		#Curent time in seconds
+
+    return cTotal
+
+
+
+while True:
+    try:
+        response = requests.get(url)
+        t=json.loads(response.text)
+        response.close()
+        cTotal = Curent(t)
+        #print(cTotal)
+        #print(response.text)
+        time.sleep(1)
+        pix1.brightness=0.1
+        pix.brightness=0.1
+
+        
+        if cTotal > (timeToSeconds(rise)) and cTotal < (timeToSeconds(setd)):
+            pix.rainbow()
+            pix.brightness=0.1
+            #pix.clear()
+        else:
+            #pix.rainbow()
+            pix.clear()
+            print("Night")
+            
+            
+            
+            
+        if cTotal > (timeToSeconds(rise)) and cTotal < (timeToSeconds(setd)):
+            pix1.rainbow()
+            #pix.clear()
+            pix1.brightness=0.1
+        else:
+            #pix1.rainbow()
+            pix1.clear()
+            print("Night")
+            
+    except Exception as e:
+        print("error:", e)
+        time.sleep(2)
+
+        
+
