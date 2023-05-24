@@ -6,7 +6,9 @@ import time
 import microcontroller
 import json
 
-wifi.radio.connect("TFS Students", "Fultoneagles")
+
+#---Conect to Wifi----
+wifi.radio.connect("TFS Students", "Fultoneagles")          #Name, Pasword
 print("connected")
 
 pool = socketpool.SocketPool(wifi.radio)
@@ -14,6 +16,7 @@ requests = adafruit_requests.Session(pool, ssl.create_default_context())
 
 print("My MAC addr:", [hex(i) for i in wifi.radio.mac_address])
 print("My IP address is", wifi.radio.ipv4_address)
+
 
 
 url = "https://api.sunrise-sunset.org/json?lat=38.6631&lng=-90.5771"
