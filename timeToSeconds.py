@@ -1,4 +1,7 @@
-def timeToSeconds(t):               #(t= "12:59:18 AM")
+def timeToSeconds(t, k):               #(t= "12:59:18 AM")
+                                         #!!! K is the difference between UTC and EST time zone.
+                                         #K is a variable to convert EST time into UCT time later in the code  
+    
     h,m,s = t.split(":")            #split each number
     #print(h,m,s)
 
@@ -23,10 +26,16 @@ def timeToSeconds(t):               #(t= "12:59:18 AM")
 
     total = nH + nM + s
     print(total, tt)
+    
+    if total < 18000:
+        total = ((total + 86400)+k*60*60)
+        #print("Total = ", total, tt)
+    
+    return total              #Print or return depending if it's within the rest of the code or on it's own
 
 
 
-#Just put in time in hh/mm/ss tt format and it's good to go!
-timeToSeconds("12:59:18 AM")
+#Just put in time in "hh:mm:ss tt" format, and what is the differense betwent UTC and EST time zone and it's good to go!
+timeToSeconds("12:59:18 AM", -5)
 
 
