@@ -11,7 +11,7 @@ pix = ledPixels(64, board.GP0)
 pix1 = ledPixels(64, board.GP15)
 
 
-def timeToSeconds(t):               #(t= "12:59:18 AM")
+def timeToSeconds(t, k=-5):               #(t= "12:59:18 AM")
     #print(t)
     h,m,s = t.split(":")
 
@@ -41,7 +41,7 @@ def timeToSeconds(t):               #(t= "12:59:18 AM")
     #print("Total =", total, tt)
     
     if total < 18000:
-        total = ((total + 86400)-18000)
+        total = ((total + 86400)+k*60*60)
         #print("Total = ", total, tt)
     
     return total
@@ -77,22 +77,14 @@ for key in t.keys():
 
 
 urlS = "https://api.sunrise-sunset.org/json?lat=38.6631&lng=-90.5771"
-
-
 response = requests.get(urlS)
 print("!!!!!!!!!!",response.text)
 t=json.loads(response.text)
 response.close()
 
+
 rise = (t["results"]["sunrise"])
 setd = (t["results"]["sunset"])
-#print("------------------", rise, setd)
-
-
-timeToSeconds(rise)
-print(" ")
-timeToSeconds(setd)
-
 
 
 def Curent(t):
@@ -121,8 +113,8 @@ while True:
         pix1.brightness=0.1
         pix.brightness=0.1
 
-        
-        if cTotal > (timeToSeconds(rise)) and cTotal < (timeToSeconds(setd)):
+        #St Louise
+        if cTotal > (timeToSeconds(rise, -5)) and cTotal < (timeToSeconds(setd, -5)):
             pix.rainbow()
             pix.brightness=0.1
             #pix.clear()
@@ -133,8 +125,8 @@ while True:
             
             
             
-            
-        if cTotal > (timeToSeconds(rise)) and cTotal < (timeToSeconds(setd)):
+            #Kyiv
+        if cTotal > (timeToSeconds(rise, 2))  and cTotal < (timeToSeconds(setd, 2)):
             pix1.rainbow()
             #pix.clear()
             pix1.brightness=0.1
@@ -148,4 +140,3 @@ while True:
         time.sleep(2)
 
         
-
