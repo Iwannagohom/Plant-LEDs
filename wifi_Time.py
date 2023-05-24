@@ -6,7 +6,7 @@ import time
 import microcontroller
 import json
 
-def timeToSeconds(t):               #(t= "12:59:18 AM")
+def timeToSeconds(t):               #(t= "12:59:18 AM")      #See timeToSeconds.py for more explanations and detail
     print(t)
     h,m,s = t.split(":")
 
@@ -26,9 +26,6 @@ def timeToSeconds(t):               #(t= "12:59:18 AM")
     
     nM=m*60
     
-    print(h, "-->", nH)
-    print(m, "-->", nM)
-    
     print(nH,nM, s, tt)
 
     total = nH + nM + s
@@ -39,7 +36,7 @@ def timeToSeconds(t):               #(t= "12:59:18 AM")
         print("sTotal = ", sTotal, tt)
     
 
-
+#---Conect to Wifi----
 wifi.radio.connect("TFS Students", "Fultoneagles")
 print("connected")
 
@@ -50,7 +47,8 @@ print("My MAC addr:", [hex(i) for i in wifi.radio.mac_address])
 print("My IP address is", wifi.radio.ipv4_address)
 
 
-url = "http://makerspace.local/makerspaceTime.php"
+#----Url to get the time---
+url = "http://makerspace.local/makerspaceTime.php"          #Need to have a server to conect to, to get time information
 
 response = requests.get(url)
 print(response.text)
@@ -59,9 +57,9 @@ t=json.loads(response.text)
 response.close()
 
 for key in t.keys():
-    print(key, t[key])
+    print(key, t[key])                                      #Gives all of the information - from second to date.
     
-print(".....", t["tm_hour"], t["tm_min"], t["tm_sec"])
+print(".....", t["tm_hour"], t["tm_min"], t["tm_sec"])    #Lokign for specific information (hours, minutes, and second) withing a big text
 
 ch = t["tm_hour"]				#curent (time) hours.
 cm = t["tm_min"]
@@ -76,7 +74,8 @@ print(cTotal)
 
 
 
-urlS = "https://api.sunrise-sunset.org/json?lat=38.6631&lng=-90.5771"
+#----Url to get the time of sunset and sunrise---
+urlS = "https://api.sunrise-sunset.org/json?lat=38.6631&lng=-90.5771"           #See Lat.py
 
 response = requests.get(urlS)
 print("!!!!!!!!!!",response.text)
@@ -87,7 +86,7 @@ rise = (t["results"]["sunrise"])
 setd = (t["results"]["sunset"])
 print("------------------", rise, setd)
 
-while True:
+while True:                             #Asking what time is it every second
     response = requests.get(url)
     print(response.text)
     time.sleep(1)
